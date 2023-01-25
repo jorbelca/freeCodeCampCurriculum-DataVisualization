@@ -1,0 +1,9 @@
+svg rect {
+  fill: red;
+}
+
+svg text {
+  fill: black;
+  font: 12px sans-serif;
+  text-anchor: end;
+}
