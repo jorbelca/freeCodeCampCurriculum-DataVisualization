@@ -1,10 +1,10 @@
 let allData
 let title
 
-let height = 700
+let height = 1000
 let width = 1000
 let barHeight = 20
-let margin = { top: 50, bottom: 50, left: 10, right: 10 }
+let margin = { top: 50, bottom: 0, left: 50, right: 20 }
 
 
 fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json')
@@ -51,6 +51,23 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             .attr('height', d => y(0) - y(d[1]))
             .attr('width', x.bandwidth())
 
+          const xAxis = (g) => {
+            g.attr('transform', `translate(0,${height - margin.bottom})`)
+            .attr('id', 'x-axis')
+              .call(d3.axisBottom(x).tickFormat(i => allData[i][0]))
+              .attr('font-size', '20px')
+              .attr('color', 'black')
+          }
+
+          const yAxis = (g) => {
+            g.attr('transform', `translate(${margin.left},0)`)
+            .attr('id', 'y-axis')
+              .call(d3.axisLeft(y).ticks(null, allData.format))
+          }
+
+
+          svg.append('g').call(yAxis)
+          svg.append('g').call(xAxis)
           svg.node()
         });
     }
