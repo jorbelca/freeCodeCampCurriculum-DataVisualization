@@ -1,5 +1,15 @@
+
+body{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 svg rect {
   fill: red;
+}
+
+svg rect:hover {
+  fill: white;
 }
 
 svg text {
