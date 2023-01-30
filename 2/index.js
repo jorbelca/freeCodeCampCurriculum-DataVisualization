@@ -29,6 +29,19 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
 
 
 
+          // Tooltip
+          var Tooltip = d3.select("body")
+            .append("div")
+            .attr('id', 'tooltip')
+            .style("visibility", "hidden")
+            .style('width', 'auto')
+            .style('heigth', 'auto')
+            .style("background-color", "white")
+            .style("border", "solid")
+            .style("border-width", "2px")
+            .style("border-radius", "5px")
+            .style("padding", "5px")
+
 
           // Title
           svg.append("text")
@@ -83,6 +96,19 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             .style("fill", (d) => { return d.Doping == '' ? "blue" : "red" })
             .attr('transform', `translate(${margin.left},0)`)
             .attr('class', 'dot')
+            .on("mouseover", (item, idx) => {
+              Tooltip.transition()
+                .style('visibility', 'visible')
+              Tooltip.html(`
+                <div>
+                ${idx.Name}, ${idx.Year} <br>
+                <b>Time:</b> ${idx.Time} 
+                <p>${idx.Doping}</p> 
+                </div>  
+`)
+              document.querySelector('#tooltip').setAttribute('data-year', idx.Year)
+            })
+            .on("mouseout", () => Tooltip.transition().style('visibility', 'hidden'))
 
 
 
@@ -95,6 +121,8 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             .attr('id', 'legend')
           svg.append("text").attr("x", 690).attr("y", 600).text("No doping Allegations").style("font-size", "15px").attr("alignment-baseline", "middle")
             .attr('id', 'legend')
+
+
 
         });
     }
