@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>D3 Choropleth Map</title>
+  </head>
+  <body>
+    <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="./index.js"></script>
+    <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+    <div id="title"><h1>United States Educational Attainment</h1></div>
+    <div id="description">
+      <h5>
+        Percentage of adults age 25 and older with a bachelor's degree or higher
+        (2010-2014)
+      </h5>
+    </div>
+    <svg id="legend">
+      <g>
+        <rect x="10" y="0" width="20" height="20" fill="Black" />
+        <text x="150" y="15" fill="white">Variance of -1 or less</text>
+      </g>
+      <g>
+        <rect x="10" y="40" width="20" height="20" fill="Red" />
+        <text x="150" y="55" fill="white">Variance of 0 or less</text>
+      </g>
+      <g>
+        <rect x="10" y="80" width="20" height="20" fill="Orange" />
+        <text x="150" y="95" fill="white">Variance of 1 or less</text>
+      </g>
+      <g>
+        <rect x="10" y="120" width="20" height="20" fill="Blue" />
+        <text x="170" y="135" fill="white">Variance of more than 1</text>
+      </g>
+    </svg>
+  </body>
+</html>

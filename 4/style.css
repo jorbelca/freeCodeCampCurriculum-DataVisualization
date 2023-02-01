@@ -1,0 +1,19 @@
+
+body{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+svg{
+  padding-top: 50px;
+}
+
+svg rect:hover {
+  fill: white;
+}
+
+svg text {
+  fill: black;
+  font: 12px sans-serif;
+  text-anchor: end;
+}
