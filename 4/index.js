@@ -74,21 +74,28 @@ async function choroplethMap() {
 
     const legendAxis = d3.scaleLinear()
       .domain([d3.min(educationData, (d) => d.bachelorsOrHigher), d3.max(educationData, (d) => d.bachelorsOrHigher)])
+      .range([290, 700]);
 
-    svg.selectAll('#legend')
+    svg.append('g')
+      .selectAll('#legend')
+      .attr('class', 'key')
+      .attr('id', 'legend')
       .data(percents)
       .enter()
       .append('rect')
-      .attr('x', (d, i) => i / 2)
+      .attr('x', (d, i) => i)
       .attr('y', 0)
       .attr('width', 4)
       .attr('height', 20)
       .style("fill", d => color(d))
       .attr("transform", (d, i) => `translate(${width / 2.5}, ${height * 0.9})`)
+    svg
       .append('g')
-      .call(d3.axisBottom(legendAxis).ticks(4))
+      .attr('class', 'tick')
+      .call(d3.axisBottom(legendAxis))
       .attr('font-size', '20px')
       .attr('color', 'black')
+      .attr("transform", (d, i) => `translate(${width / 8.5}, ${height * 0.93})`)
 
 
 
