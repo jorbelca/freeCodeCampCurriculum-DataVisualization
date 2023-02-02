@@ -16,6 +16,8 @@ let margin = { top: 20, bottom: 20, left: 20, right: 20 }
 
 async function choroplethMap() {
   try {
+    const educationData = await d3.json(apiEndPointEducation);
+    const mapData = await d3.json(apiEndPointCountyData);
 
     const svg = d3.select("body")
       .append("svg")
@@ -23,10 +25,9 @@ async function choroplethMap() {
       .attr("height", height)
 
     const color = d3.scaleSequential().interpolator(d3.interpolateViridis)
-      .domain([2.6, 75.1])
+      .domain([d3.min(educationData, (d) => d.bachelorsOrHigher), d3.max(educationData, (d) => d.bachelorsOrHigher)])
 
-    const educationData = await d3.json(apiEndPointEducation);
-    const mapData = await d3.json(apiEndPointCountyData);
+
 
     const path = d3.geoPath();
 
@@ -69,33 +70,25 @@ async function choroplethMap() {
       .on("mouseout", () => Tooltip.transition().style('visibility', 'hidden'))
 
 
+    let percents = Array.from(new Set(educationData.map(d => d.bachelorsOrHigher))).sort((a, b) => a - b)
 
+    const legendAxis = d3.scaleLinear()
+      .domain([d3.min(educationData, (d) => d.bachelorsOrHigher), d3.max(educationData, (d) => d.bachelorsOrHigher)])
 
-
-
-
-
-    // .style("fill", function (d) {
-    //   let variance = d.variance
-    //   if (variance <= -1) {
-    //     return 'Black'
-    //   } else if (variance <= 0) {
-    //     return 'Blue'
-    //   }
-    //   else if (variance <= 1) {
-    //     return 'Orange'
-    //   } else {
-    //     return 'Red'
-    //   }
-
-
-
-
-
-
-
-
-
+    svg.selectAll('#legend')
+      .data(percents)
+      .enter()
+      .append('rect')
+      .attr('x', (d, i) => i / 2)
+      .attr('y', 0)
+      .attr('width', 4)
+      .attr('height', 20)
+      .style("fill", d => color(d))
+      .attr("transform", (d, i) => `translate(${width / 2.5}, ${height * 0.9})`)
+      .append('g')
+      .call(d3.axisBottom(legendAxis).ticks(4))
+      .attr('font-size', '20px')
+      .attr('color', 'black')
 
 
 
