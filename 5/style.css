@@ -4,6 +4,9 @@ body{
   flex-direction: column;
   align-items: center;
 }
+#btns{
+  margin-top: 20px;
+}
 #title{
   font-size:28px
 }
@@ -38,6 +41,9 @@ svg.legend-item,.legend{
   position: relative;
 }
 
+text{
+  overflow: hidden;
+}
 /* svg text {
   fill: black;
   font: 12px sans-serif;

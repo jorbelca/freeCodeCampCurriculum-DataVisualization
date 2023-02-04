@@ -22,7 +22,7 @@ async function renderData(api) {
   try {
     const Data = await d3.json(api);
 
-    console.log(Data);
+
     d3.select('svg').remove()
     d3.select('#tooltip').remove()
     d3.select('#legend').remove()
@@ -37,7 +37,7 @@ async function renderData(api) {
       .html(`<h1>${Data.name == "Video Game Sales Data Top 100" ? 'Video Games' : Data.name}<h1>`)
 
     d3.select("#description")
-      .html(`<h4>Top 100 ${Data.name == "Video Game Sales Data Top 100" ? 'Video Games' : Data.name} Sales <h4>`)
+      .html(`<h4>Top 100 ${Data.name == "Video Game Sales Data Top 100" ? 'Video Games' : Data.name} by Sales <h4>`)
 
     const color = d3.scaleOrdinal()
       .domain([Data.children.map(n => n.name)])
@@ -112,15 +112,13 @@ async function renderData(api) {
     svg
       .selectAll("text")
       .append('div')
-      .attr('width', function (d) { return d.x1 - d.x0 })
-      .attr('height', function (d) { return d.y1 - d.y0 })
       .data(root.leaves())
       .enter()
       .append("text")
-      .attr("x", function (d) { return d.x0 + 5 })
-      .attr("y", function (d) { return d.y0 + 30 })
       .text(function (d) { return d.data.name })
-      .attr("font-size", "10px")
+      .attr("x", function (d) { return d.x0 + 5 })
+      .attr("y", function (d) { return d.y0 + 10 })
+      .attr("font-size", "12px")
       .attr("font-family", "Verdana")
 
 
