@@ -25,7 +25,7 @@ async function renderData(api) {
 
     d3.select('svg').remove()
     d3.select('#tooltip').remove()
-
+    d3.select('#legend').remove()
 
     const svg = d3.select("body")
       .append("svg")
@@ -137,15 +137,17 @@ async function renderData(api) {
 
     let datas = Data.children
 
-    let leg = d3.select('#legend')
+    let leg = d3.select('body')
       .attr('width', width / 10)
       .attr('height', height / 10)
-      .append('g')
+      .append('div')
       .attr('id', 'legend')
       .attr('transform', 'translate(' + width / 10 + ', ' + 0 + ')');
 
     // legend title
-    leg.append('text')
+    leg.append('div')
+      .attr('class', 'legend')
+      .append('text')
       .style('font-weight', 'bold')
       .attr('x', 10)
       .attr('y', -10)
@@ -156,25 +158,23 @@ async function renderData(api) {
     let legendItem = leg.selectAll('.legend-item')
       .data(datas)
       .enter()
-      .append('g')
+      .append('svg')
       .attr('class', 'legend-item')
-      .attr('transform', function (d, i) {
-        return 'translate(10,' + i * 25 + ')'
-      });
+
 
     // legend rectangle
     legendItem.append('rect')
       .attr('class', 'legend-item')
-      .attr('width', 10)
-      .attr('height', 10)
-      .style('fill', function (d) {
-        return color(d.name)
-      });
+      .attr('width', 20)
+      .attr('height', 20)
+      .style('fill', (d) => color(d.name))
+
 
     // legend text
     legendItem.append('text')
       .attr('x', 25)
-      .attr('y', 15).text(function (d) {
+      .attr('y', 15)
+      .text(function (d) {
         return d.name;
       })
 
