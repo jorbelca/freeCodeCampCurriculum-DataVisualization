@@ -36,7 +36,7 @@ async function renderData(api) {
       .domain([Data.children.map(n => n.name)])
       .range(d3.schemeCategory10
         .map(function (c) { c = d3.rgb(c); c.opacity = 0.6; return c; }));
-    // .range(["#402D54", "#D18975", "#8FD175"])
+
 
     const opacity = d3.scaleLinear()
       .domain([10, 30])
@@ -84,9 +84,6 @@ async function renderData(api) {
       .attr('data-name', (d) => d.data.name)
       .attr('data-category', (d) => d.data.category)
       .attr('data-value', (d) => +d.data.value)
-      .append('div')
-      .attr("class", "node-label")
-      .text((d) => d.data.name)
       .on("mouseover", (item, idx) => {
         Tooltip.transition()
           .style('visibility', 'visible')
@@ -97,7 +94,7 @@ async function renderData(api) {
         <p>Value: ${idx.data.value}</p>
         </div>  
       `)
-        Tooltip.attr("data-vallue", () => idx.data)
+        Tooltip.attr("data-value", () => idx.data.value)
 
       })
       .on("mouseout", () => Tooltip.transition().style('visibility', 'hidden'))
@@ -105,28 +102,21 @@ async function renderData(api) {
 
 
 
-    // svg
-    //   .selectAll("text")
-    //   .data(root.leaves())
-    //   .enter()
-    //   .append("text")
-    //   .attr("x", function (d) { return d.x0 + 60 })    // +10 to adjust position (more right)
-    //   .attr("y", function (d) { return d.y0 + 40 })    // +20 to adjust position (lower)
-    //   .text(function (d) { return d.data.name })
-    //   .attr("font-size", "8px")
-    //   .attr("color", "white")
+    svg
+      .selectAll("text")
+      .append('div')
+      .attr('width', function (d) { return d.x1 - d.x0 })
+      .attr('height', function (d) { return d.y1 - d.y0 })
+      .data(root.leaves())
+      .enter()
+      .append("text")
+      .attr("x", function (d) { return d.x0 + 5 })    // +10 to adjust position (more right)
+      .attr("y", function (d) { return d.y0 + 30 })    // +20 to adjust position (lower)
+      .text(function (d) { return d.data.name })
+      .attr("font-size", "10px")
+      .attr("font-family", "Verdana")
 
-    // and to add the text labels
-    // svg
-    //   .selectAll("vals")
-    //   .data(root.leaves())
-    //   .enter()
-    //   .append("text")
-    //   .attr("x", function (d) { return d.x0 + 35 })    // +10 to adjust position (more right)
-    //   .attr("y", function (d) { return d.y0 + 95 })    // +20 to adjust position (lower)
-    //   .text(function (d) { return d.data.value })
-    //   .attr("font-size", "10px")
-    //   .attr("fill", "white")
+
 
 
 
