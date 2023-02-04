@@ -15,8 +15,27 @@ svg rect:hover {
   fill: white;
 }
 
-svg text {
+/* svg text {
   fill: black;
   font: 12px sans-serif;
   text-anchor: end;
+} */
+.node {
+  box-sizing: border-box;
+  position: absolute;
+  overflow: hidden;
+  
 }
+
+.node-label {
+  padding: 4px;
+  line-height: 1em;
+  white-space: pre;
+  width:10px;
+  height: 10px;
+}
+
+.node-value {
+  color: rgba(0,0,0,0.8);
+  font-size: 9px;
+  margin-top: 1px;}

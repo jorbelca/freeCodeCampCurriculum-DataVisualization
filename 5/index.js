@@ -12,12 +12,20 @@ let width = 1000
 let padding = 20
 let margin = { top: 20, bottom: 20, left: 20, right: 20 }
 
-document.getElementById('video-game-btn').onclick = () => renderData(apiEndPointKikstarterPledges)
 
-async function renderData(data) {
+document.addEventListener('DOMContentLoaded', () => renderData(apiEndPointVideoGameSales), false);
+document.getElementById('video-game-btn').onclick = () => renderData(apiEndPointVideoGameSales)
+document.getElementById('movies-btn').onclick = () => renderData(apiEndPointMovieSales)
+document.getElementById('kikstarter-btn').onclick = () => renderData(apiEndPointKikstarterPledges)
+
+async function renderData(api) {
   try {
-    const Data = await d3.json(data);
+    const Data = await d3.json(api);
     console.log(Data.children);
+
+    d3.select('svg').remove()
+    d3.select('#tooltip').remove()
+
 
     const svg = d3.select("body")
       .append("svg")
@@ -26,10 +34,18 @@ async function renderData(data) {
 
     const color = d3.scaleOrdinal()
       .domain([Data.children.map(n => n.name)])
-      .range(["#402D54", "#D18975", "#8FD175"])
+      .range(d3.schemeCategory10
+        .map(function (c) { c = d3.rgb(c); c.opacity = 0.6; return c; }));
+    // .range(["#402D54", "#D18975", "#8FD175"])
+
+    const opacity = d3.scaleLinear()
+      .domain([10, 30])
+      .range([.5, 1])
 
 
-    const root = d3.hierarchy(Data).sum(function (d) { return d.value })
+    const root = d3.hierarchy(Data).sum(function (d) {
+      return d.value
+    })
 
 
     // Tooltip
@@ -48,9 +64,9 @@ async function renderData(data) {
 
     d3.treemap()
       .size([width, height])
-      .paddingTop(28)
+      .paddingTop(3)
       .paddingRight(3)
-      .paddingInner(2)
+      .paddingInner(3)
       (root)
 
     svg
@@ -65,51 +81,69 @@ async function renderData(data) {
       .style("stroke", "black")
       .style("fill", function (d) { return color(d.parent.data.name) })
       .style("opacity", function (d) { return opacity(d.data.value) })
+      .attr('data-name', (d) => d.data.name)
+      .attr('data-category', (d) => d.data.category)
+      .attr('data-value', (d) => +d.data.value)
+      .append('div')
+      .attr("class", "node-label")
+      .text((d) => d.data.name)
+      .on("mouseover", (item, idx) => {
+        Tooltip.transition()
+          .style('visibility', 'visible')
+        Tooltip.html(`
+        <div>
+        <p>Name: ${idx.data.name}</p>
+        <p>Category: ${idx.data.category}</p>
+        <p>Value: ${idx.data.value}</p>
+        </div>  
+      `)
+        Tooltip.attr("data-vallue", () => idx.data)
+
+      })
+      .on("mouseout", () => Tooltip.transition().style('visibility', 'hidden'))
 
 
 
-    // svg.append("g")
-    //   .selectAll("path")
-    //   .data(topojson.feature(mapData, mapData.objects.counties).features)
-    //   .enter().append("path").attr("d", path)
-    //   .attr("class", "county")
-    //   .attr("data-fips", d => d.id)
-    //   .attr("data-education", d => (educationData.filter(e => e.fips == d.id))[0].bachelorsOrHigher)
-    //   .attr("fill", d => color((educationData.filter(e => e.fips == d.id))[0].bachelorsOrHigher))
-    //   .on("mouseover", (item, idx) => {
-    //     Tooltip.transition()
-    //       .style('visibility', 'visible')
-    //     Tooltip.html(`
-    //     <div>
-    //    ${(educationData.filter(e => e.fips == idx.id))[0].area_name} : ${(educationData.filter(e => e.fips == idx.id))[0].bachelorsOrHigher} % 
-    //     </div>  
-    //   `)
-    //     Tooltip.attr("data-education", () =>
-    //       (educationData.filter(e => e.fips == idx.id))[0].bachelorsOrHigher)
 
-    //   })
-    //   .on("mouseout", () => Tooltip.transition().style('visibility', 'hidden'))
-
-
-    // let percents = Array.from(new Set(educationData.map(d => d.bachelorsOrHigher))).sort((a, b) => a - b)
-
-    // const legendAxis = d3.scaleLinear()
-    //   .domain([d3.min(educationData, (d) => d.bachelorsOrHigher), d3.max(educationData, (d) => d.bachelorsOrHigher)])
-    //   .range([290, 700]);
-
-    // svg.append('g')
-    //   .selectAll('#legend')
-    //   .attr('class', 'key')
-    //   .attr('id', 'legend')
-    //   .data(percents)
+    // svg
+    //   .selectAll("text")
+    //   .data(root.leaves())
     //   .enter()
-    //   .append('rect')
-    //   .attr('x', (d, i) => i)
-    //   .attr('y', 0)
-    //   .attr('width', 4)
-    //   .attr('height', 20)
-    //   .style("fill", d => color(d))
-    //   .attr("transform", (d, i) => `translate(${width / 2.5}, ${height * 0.9})`)
+    //   .append("text")
+    //   .attr("x", function (d) { return d.x0 + 60 })    // +10 to adjust position (more right)
+    //   .attr("y", function (d) { return d.y0 + 40 })    // +20 to adjust position (lower)
+    //   .text(function (d) { return d.data.name })
+    //   .attr("font-size", "8px")
+    //   .attr("color", "white")
+
+    // and to add the text labels
+    // svg
+    //   .selectAll("vals")
+    //   .data(root.leaves())
+    //   .enter()
+    //   .append("text")
+    //   .attr("x", function (d) { return d.x0 + 35 })    // +10 to adjust position (more right)
+    //   .attr("y", function (d) { return d.y0 + 95 })    // +20 to adjust position (lower)
+    //   .text(function (d) { return d.data.value })
+    //   .attr("font-size", "10px")
+    //   .attr("fill", "white")
+
+
+
+
+    svg.append('svg')
+      .attr('id', 'legend')
+      .data(root.leaves())
+      .enter()
+      .join('rect')
+      .attr('x', 400)
+      .attr('y', 200)
+      .attr('width', 4)
+      .attr('height', 4)
+      .style("fill", function (d) {
+        return color(d.parent.data.name)
+      })
+      .attr("transform", (d, i) => `translate(${width / 2}, ${height * 0.5})`)
     // svg
     //   .append('g')
     //   .attr('class', 'tick')
