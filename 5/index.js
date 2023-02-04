@@ -22,15 +22,22 @@ async function renderData(api) {
   try {
     const Data = await d3.json(api);
 
-
+    console.log(Data);
     d3.select('svg').remove()
     d3.select('#tooltip').remove()
     d3.select('#legend').remove()
+
 
     const svg = d3.select("body")
       .append("svg")
       .attr("width", width)
       .attr("height", height)
+
+    d3.select("#title")
+      .html(`<h1>${Data.name == "Video Game Sales Data Top 100" ? 'Video Games' : Data.name}<h1>`)
+
+    d3.select("#description")
+      .html(`<h4>Top 100 ${Data.name == "Video Game Sales Data Top 100" ? 'Video Games' : Data.name} Sales <h4>`)
 
     const color = d3.scaleOrdinal()
       .domain([Data.children.map(n => n.name)])
@@ -117,23 +124,6 @@ async function renderData(api) {
       .attr("font-family", "Verdana")
 
 
-
-
-
-
-    // svg.selectAll('#legend')
-    //   .attr('id', 'legend')
-    //   .data(root.leaves())
-    //   .enter()
-    //   .append('rect')
-    //   .attr('x', 400)
-    //   .attr('y', 200)
-    //   .attr('width', 4)
-    //   .attr('height', 4)
-    //   .style("fill", function (d) {
-    //     return color(d.parent.data.name)
-    //   })
-    //   .attr("transform", (d, i) => `translate(${width / 2}, ${height * 0.5})`)
 
     let datas = Data.children
 
