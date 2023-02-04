@@ -21,7 +21,7 @@ document.getElementById('kikstarter-btn').onclick = () => renderData(apiEndPoint
 async function renderData(api) {
   try {
     const Data = await d3.json(api);
-    console.log(Data.children);
+
 
     d3.select('svg').remove()
     d3.select('#tooltip').remove()
@@ -110,8 +110,8 @@ async function renderData(api) {
       .data(root.leaves())
       .enter()
       .append("text")
-      .attr("x", function (d) { return d.x0 + 5 })    // +10 to adjust position (more right)
-      .attr("y", function (d) { return d.y0 + 30 })    // +20 to adjust position (lower)
+      .attr("x", function (d) { return d.x0 + 5 })
+      .attr("y", function (d) { return d.y0 + 30 })
       .text(function (d) { return d.data.name })
       .attr("font-size", "10px")
       .attr("font-family", "Verdana")
@@ -121,28 +121,62 @@ async function renderData(api) {
 
 
 
-    svg.append('svg')
+    // svg.selectAll('#legend')
+    //   .attr('id', 'legend')
+    //   .data(root.leaves())
+    //   .enter()
+    //   .append('rect')
+    //   .attr('x', 400)
+    //   .attr('y', 200)
+    //   .attr('width', 4)
+    //   .attr('height', 4)
+    //   .style("fill", function (d) {
+    //     return color(d.parent.data.name)
+    //   })
+    //   .attr("transform", (d, i) => `translate(${width / 2}, ${height * 0.5})`)
+
+    let datas = Data.children
+
+    let leg = d3.select('#legend')
+      .attr('width', width / 10)
+      .attr('height', height / 10)
+      .append('g')
       .attr('id', 'legend')
-      .data(root.leaves())
+      .attr('transform', 'translate(' + width / 10 + ', ' + 0 + ')');
+
+    // legend title
+    leg.append('text')
+      .style('font-weight', 'bold')
+      .attr('x', 10)
+      .attr('y', -10)
+      .text('Legend');
+
+
+    // create g for each legend item
+    let legendItem = leg.selectAll('.legend-item')
+      .data(datas)
       .enter()
-      .join('rect')
-      .attr('x', 400)
-      .attr('y', 200)
-      .attr('width', 4)
-      .attr('height', 4)
-      .style("fill", function (d) {
-        return color(d.parent.data.name)
+      .append('g')
+      .attr('class', 'legend-item')
+      .attr('transform', function (d, i) {
+        return 'translate(10,' + i * 25 + ')'
+      });
+
+    // legend rectangle
+    legendItem.append('rect')
+      .attr('class', 'legend-item')
+      .attr('width', 10)
+      .attr('height', 10)
+      .style('fill', function (d) {
+        return color(d.name)
+      });
+
+    // legend text
+    legendItem.append('text')
+      .attr('x', 25)
+      .attr('y', 15).text(function (d) {
+        return d.name;
       })
-      .attr("transform", (d, i) => `translate(${width / 2}, ${height * 0.5})`)
-    // svg
-    //   .append('g')
-    //   .attr('class', 'tick')
-    //   .call(d3.axisBottom(legendAxis))
-    //   .attr('font-size', '20px')
-    //   .attr('color', 'black')
-    //   .attr("transform", (d, i) => `translate(${width / 8.5}, ${height * 0.93})`)
-
-
 
   } catch (error) { console.log(error.name, error.message, error) }
 
